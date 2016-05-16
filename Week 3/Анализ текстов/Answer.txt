@@ -1,0 +1,57 @@
+import pandas as pd
+import numpy as np
+from sklearn.datasets import load_boston
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.cross_validation import KFold
+from sklearn.cross_validation import *
+from sklearn.preprocessing import *
+from sklearn import metrics
+from sklearn.linear_model import Perceptron
+from sklearn import datasets
+import sklearn
+import time
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import SVC
+from sklearn.grid_search import GridSearchCV
+from  sklearn.cross_validation import KFold, cross_val_score
+
+newsgroups = datasets.fetch_20newsgroups(
+                    subset='all', 
+                    categories=['alt.atheism', 'sci.space']
+    )
+print("Loaded")
+
+X = newsgroups.data
+y = newsgroups.target
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(X).toarray()
+
+grid = {'C': np.power(10.0, np.arange(-5, 6))}
+cv = KFold(len(y), n_folds=5, shuffle=True, random_state=241)
+clf = SVC(kernel='linear', random_state=241)
+gs = GridSearchCV(clf, grid, scoring='accuracy', cv=cv)
+#gs.fit(X, y)
+
+
+#for a in gs.grid_scores_:
+#    print(a.mean_validation_score)
+    
+clf = SVC(C=1, kernel='linear', random_state=241)
+clf.fit(X, y)
+
+# абсолютное значение весов
+res = np.abs(clf.coef_[0])
+
+#10 максимальных весов
+#inds = res.argsort()[-10:]
+feature_mapping = vectorizer.get_feature_names()
+#print feature_mapping
+'''for i, class_label in enumerate(clf.classes_):
+    top10 = np.argsort(clf.coef_[0])[-10:]
+    print("%s: %s" % (class_label, " ".join(feature_mapping[j] for j in top10)))'''
+
+coefs_with_fns = sorted(zip(res, feature_mapping))
+top = (coefs_with_fns[-10:])#, coefs_with_fns[:-(10 + 1):-1])
+for (coef_1, fn_1) in top:#, (coef_2, fn_2) in top:
+    print "\t%.4f\t%-15s" % (coef_1, fn_1)#\t\t%.4f\t%-15s , coef_2, fn_2)
