@@ -1,0 +1,117 @@
+import pandas as pd
+import numpy as np
+from sklearn.datasets import load_boston
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.cross_validation import KFold
+from sklearn.cross_validation import *
+from sklearn.preprocessing import *
+from sklearn import metrics
+from sklearn.linear_model import Perceptron
+from sklearn import datasets
+import sklearn
+import time
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import SVC
+from sklearn.grid_search import GridSearchCV
+from  sklearn.cross_validation import KFold, cross_val_score
+
+#sv = sklearn.svm.SVC(C=100000, kernel='linear', random_state = 241)
+#sv.fit(datap, datat)
+'''
+#newsgroups = datasets.fetch_20newsgroups(
+                    subset='all', 
+                    categories=['alt.atheism', 'sci.space']
+             )
+             
+#datap = newsgroups.data
+t = newsgroups.target
+d = newsgroups.data
+print len(t)
+print len(d)
+d = d.fit_transform()
+t = t.transform()
+
+vectorizer = sklearn.feature_extraction.text.TfidfVectorizer()
+d = vectorizer(d)
+
+grid = {'C': np.power(10.0, np.arange(-5, 6))}
+
+cv = KFold(t.size, n_folds=5, shuffle=True, random_state=241)
+clf = svm.SVC(kernel='linear', random_state=241)
+gs = grid_search.GridSearchCV(clf, grid, scoring='accuracy', cv=cv)
+gs.fit(d, t)
+
+for a in gs.grid_scores_:
+    print(grid["C"][i], a.mean_validation_score)
+
+sv = sklearn.svm.SVC(C=100000, kernel='linear', random_state = 241)
+sv.fit(datap, datat)
+
+
+#print datap'''
+
+'''newsgroups = datasets.fetch_20newsgroups(
+                    subset='all', 
+                    categories=['alt.atheism', 'sci.space']
+             )
+#X = newsgpoups.data
+y = newsgroups.target
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(newsgroups.data).toarray()
+
+grid = {'C': np.power(10.0, np.arange(-5, 6))}
+
+cv = KFold(len(y), n_folds=5, shuffle=True, random_state=241)
+clf = SVC(kernel='linear', random_state=241)
+gs = GridSearchCV(clf, grid, scoring='accuracy', cv=cv)
+gs.fit(X, y)
+
+for a in enumerate(gs.grid_scores_):
+    print a.mean_validation_score'''
+    
+'''# тут установил C=1нахождения оптимального С
+clf = SVC(C=1, kernel='linear', random_state=241)
+clf.fit(X, y)
+
+# абсолютное значение весов
+res = abs(clf.coef_)
+
+#10 максимальных весов
+inds = clf.res.data.argsort()[-10:]
+feature_mapping = vectorizer.get_feature_names()
+
+print(sorted(feature_mapping[i] for i in inds))'''
+
+newsgroups = datasets.fetch_20newsgroups(
+                    subset='all', 
+                    categories=['alt.atheism', 'sci.space']
+    )
+print("Loaded")
+
+X = newsgroups.data
+y = newsgroups.target
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(X).toarray()
+
+grid = {'C': np.power(10.0, np.arange(-5, 6))}
+cv = KFold(len(y), n_folds=5, shuffle=True, random_state=241)
+clf = SVC(kernel='linear', random_state=241)
+gs = GridSearchCV(clf, grid, scoring='accuracy', cv=cv)
+#gs.fit(X, y)
+
+
+#for a in gs.grid_scores_:
+#    print(a.mean_validation_score)
+    
+clf = SVC(C=1, kernel='linear', random_state=241)
+clf.fit(X, y)
+
+# абсолютное значение весов
+res = np.abs(clf.coef_.data)
+
+#10 максимальных весов
+inds = res.argsort()[-10:]
+feature_mapping = vectorizer.get_feature_names()
+#print feature_mapping
+#print(sorted(feature_mapping[i] for i in inds))
