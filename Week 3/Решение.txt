@@ -1,0 +1,43 @@
+import pandas as pd
+import numpy as np
+import math
+import matplotlib.pyplot as plt
+from pylab import scatter, show, legend, xlabel, ylabel
+from sklearn import *
+
+def sigmoid(x):
+    return (1/(1+np.exp(-w1*x1 - w2*x2)))
+
+path = r'C:\Users\user\Desktop\data-logistic.csv'
+data = pandas.read_csv(path, header=None)
+#x1 = pd.read_csv(path, header = None, usecols = [1]).values.reshape(len(data),)
+X = pd.read_csv(path, header = None, usecols = [1,2]).values#.values.reshape(len(data),)
+y = pd.read_csv(path, header = None, usecols = [0]).values.reshape(len(data),)
+
+old_w1 = 1
+old_w2 = 1
+w1 = 0.0
+w2 = 0.0
+C = 0 #Заменить на 10 для L2-регуляризации
+k = 0.1
+
+for i in range(10000):
+    w1 += np.float(k*np.mean(
+        np.multiply(x1,y)*(1-1/(np.exp(-y*(w1*x1+w2*x2))+1))
+        )-k*C*w1)
+    w2 += np.float(k*np.mean(
+        np.multiply(x2,y)*(1-1/(np.exp(-y*(w1*x1+w2*x2))+1))
+        )-k*C*w2)
+    w_now = np.array([[w1],[w2]])
+    w_bef = np.array([[old_w1],[old_w2]])
+    w_dist = np.linalg.norm(w_now)-np.linalg.norm(w_bef)
+   
+    if (np.abs(w_dist)<=0.00001):
+        print w_dist
+        print ("Yes", i)
+        break
+    old_w1,old_w2  = w1, w2
+        
+print w
+res = sigmoid(X.dot(w))
+print (metrics.roc_auc_score(y,res))
